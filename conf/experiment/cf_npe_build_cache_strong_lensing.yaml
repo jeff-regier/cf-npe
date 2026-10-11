@@ -1,0 +1,60 @@
+# @package _global_
+defaults:
+  - /problem: strong_lensing
+
+problem:
+  encoder:
+    _target_: cf_npe.problems.strong_lensing.SLEncoderArch
+    base_channels: ???
+    blocks_per_level: ???
+    dropout: ???
+    asinh_softening: ???
+    activation: ???
+    norm_groups: ???
+    padding_mode: ???
+    use_se: ???
+    drop_path_max: ???
+  mean_head:
+    _target_: cf_npe.problems.strong_lensing.SLMeanHeadArch
+    width: ???
+    n_blocks: ???
+    n_attention: ???
+    attention_heads: 4
+    dropout: 0.3
+    use_pos_encoding: ???
+    use_global_pool: ???
+    activation: gelu
+    norm_groups: 8
+    padding_mode: reflect
+    use_se: true
+    drop_path_max: 0.1
+
+evaluator:
+  _target_: cf_npe.evaluators.CompositeEvaluator
+  evaluators: []
+  sample_evaluators: []
+
+train_fn:
+  _target_: cf_npe.methods.cf_npe.train_cf_npe_stage1_only
+
+train_params:
+  k_folds: 10
+  n_replicates: ???
+  training:
+    _target_: cf_npe.training.loop.TrainingConfig
+    n_epochs: 100
+    batch_size: ???
+    lr: ???
+    weight_decay: ???
+    grad_clip: null
+  parallel_ensemble: false
+  encoder_cfg:
+    _target_: cf_npe.problems.base.EncoderConfig
+    hidden_dim: 256
+    n_layers: 2
+    dropout: 0.3
+  stage1_cache_save: ${out_dir}/cache/stage1_seed__SEED__.pt
+
+n_train: 10000
+use_amp: true
+seeds_per_job: 1

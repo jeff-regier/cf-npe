@@ -1,0 +1,41 @@
+# @package _global_
+defaults:
+  - /problem: mixture
+problem:
+  dim: ???
+evaluator:
+  _target_: cf_npe.evaluators.CompositeEvaluator
+  evaluators:
+    - _target_: cf_npe.evaluators.LogLikelihoodEvaluator
+    - _target_: cf_npe.evaluators.C2STEvaluator
+      n_pairs: ${scale.c2st_pairs}
+      n_epochs: ${scale.c2st_epochs}
+  sample_evaluators:
+    - _target_: cf_npe.evaluators.SBCEvaluator
+      n_samples: ${scale.sbc_samples}
+train_fn:
+  _target_: cf_npe.methods.cf_npe.train_stage2_only
+train_params:
+  in_fold_residuals: false
+  posterior_type: nsf
+  stage2_mixture: false
+  parallel_ensemble: true
+  stage1_cache_path: ${stage1_from}/cache/stage1_seed__SEED__.pt
+  stage2_cfg:
+    _target_: cf_npe.stages.stage2.Stage2Config
+    hidden_dim: ???
+    n_layers: ???
+    n_transforms: 2
+    n_bins: 8
+    tail_bound: 5.0
+    dropout: ???
+  stage2_training:
+    _target_: cf_npe.training.loop.TrainingConfig
+    n_epochs: 100
+    batch_size: ???
+    lr: ???
+    weight_decay: ???
+    grad_clip: null
+n_train: 10000
+seeds_per_job: 10
+eval_batch_size: ${train_params.stage2_training.batch_size}

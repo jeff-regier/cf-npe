@@ -1,0 +1,30 @@
+# @package _global_
+defaults:
+  - /sweep/_base
+  - /experiment: strong_lensing_cf_npe_mean
+  - _self_
+
+optuna_objective: mean_prediction_mse
+
+hydra:
+  sweeper:
+    study_name: strong_lensing_mean_full
+    n_trials: 200
+    params:
+      train_params.training.lr: tag(log, interval(3.0e-4, 5.0e-3))
+      train_params.training.weight_decay: choice(0.0, 1.0e-6, 1.0e-5, 1.0e-4, 1.0e-3)
+      problem.encoder.base_channels: choice(32, 64, 128)
+      problem.encoder.blocks_per_level: choice(1, 2, 4)
+      problem.mean_head.width: choice(64, 128, 256)
+      problem.mean_head.n_blocks: choice(4, 8, 16)
+      problem.mean_head.n_attention: choice(0, 1, 2, 4)
+      problem.encoder.dropout: choice(0.0, 0.1, 0.2, 0.3, 0.5)
+      problem.encoder.drop_path_max: choice(0.0, 0.1, 0.2, 0.3)
+      problem.encoder.activation: choice(gelu, silu, relu)
+      problem.encoder.norm_groups: choice(8, 16, 32)
+      problem.encoder.asinh_softening: choice(0.0, 0.2, 0.5, 1.0)
+      problem.mean_head.use_pos_encoding: choice(false, true)
+      train_params.training.batch_size: choice(64, 128, 256)
+      problem.encoder.padding_mode: choice(zeros, reflect)
+      problem.encoder.use_se: choice(false, true)
+      problem.mean_head.use_global_pool: choice(false, true)

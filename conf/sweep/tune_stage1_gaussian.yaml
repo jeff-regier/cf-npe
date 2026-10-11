@@ -1,0 +1,19 @@
+# @package _global_
+defaults:
+  - /sweep/_base
+  - /experiment: tune_stage1_gaussian
+  - _self_
+
+optuna_objective: oof_mse
+seeds_per_job: 5
+
+hydra:
+  sweeper:
+    study_name: cf_npe_stage1_gaussian
+    params:
+      train_params.training.lr: tag(log, interval(1.0e-4, 1.0e-2))
+      train_params.training.weight_decay: tag(log, interval(1.0e-6, 1.0e-3))
+      train_params.encoder_cfg.hidden_dim: choice(64, 128, 256, 512)
+      train_params.encoder_cfg.n_layers: choice(1, 2, 3)
+      train_params.encoder_cfg.dropout: interval(0.0, 0.5)
+      train_params.training.batch_size: choice(64, 128, 256)

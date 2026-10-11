@@ -1,0 +1,38 @@
+# @package _global_
+defaults:
+  - /problem: gaussian
+
+problem:
+  dim: 200
+
+evaluator:
+  _target_: cf_npe.evaluators.CompositeEvaluator
+  evaluators:
+    - _target_: cf_npe.evaluators.LogLikelihoodEvaluator
+  sample_evaluators:
+    - _target_: cf_npe.evaluators.VarianceCalibrationEvaluator
+      n_samples: ${scale.calibration_samples}
+
+train_fn:
+  _target_: cf_npe.methods.std_npe.train_std_npe
+
+train_params:
+  parallel_ensemble: true
+  flow_cfg: null
+  loss: standard
+  posterior_type: gaussian
+  training:
+    _target_: cf_npe.training.loop.TrainingConfig
+    n_epochs: 100
+    batch_size: ???
+    lr: ???
+    weight_decay: ???
+    grad_clip: null
+  encoder_cfg:
+    _target_: cf_npe.problems.base.EncoderConfig
+    hidden_dim: ???
+    n_layers: ???
+    dropout: ???
+
+n_train: 10000
+seeds_per_job: 5

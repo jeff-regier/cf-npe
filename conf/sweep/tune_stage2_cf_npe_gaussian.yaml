@@ -1,0 +1,19 @@
+# @package _global_
+defaults:
+  - /sweep/_base
+  - /experiment: tune_stage2_cf_npe_gaussian
+  - _self_
+
+optuna_objective: best_val_loss
+seeds_per_job: 3
+
+hydra:
+  sweeper:
+    study_name: cf_npe_gaussian
+    params:
+      train_params.stage2_training.lr: tag(log, interval(1.0e-4, 1.0e-2))
+      train_params.stage2_training.weight_decay: tag(log, interval(1.0e-6, 1.0e-3))
+      train_params.stage2_cfg.hidden_dim: choice(64, 128, 256)
+      train_params.stage2_cfg.n_layers: choice(1, 2, 3)
+      train_params.stage2_cfg.dropout: interval(0.0, 0.5)
+      train_params.stage2_training.batch_size: choice(64, 128, 256)

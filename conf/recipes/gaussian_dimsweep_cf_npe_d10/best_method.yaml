@@ -1,0 +1,6 @@
+train_params.stage2_training.lr: 0.00546686399245051
+train_params.stage2_training.weight_decay: 0.0009309827487444325
+train_params.stage2_cfg.hidden_dim: 64
+train_params.stage2_cfg.n_layers: 3
+train_params.stage2_cfg.dropout: 0.3673360197680381
+train_params.stage2_training.batch_size: 256

@@ -1,0 +1,20 @@
+# @package _global_
+defaults:
+  - /sweep/_base
+  - /experiment: strong_lensing_cf_npe_stage2_nsf
+  - _self_
+
+optuna_objective: best_val_loss
+
+train_params:
+  stage2_cfg:
+    residual: true
+
+hydra:
+  sweeper:
+    study_name: sl_cf_npe_stage2_residual_nsf
+    params:
+      train_params.stage2_training.lr: tag(log, interval(1.0e-3, 5.0e-3))
+      train_params.stage2_training.weight_decay: choice(0.0, 1.0e-5, 1.0e-4)
+      problem.velocity_head.data_encoding_dim: choice(64, 128)
+      problem.velocity_head.mu_proj_channels: choice(4, 8)

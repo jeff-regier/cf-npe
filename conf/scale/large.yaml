@@ -1,0 +1,10 @@
+n_test: 1000
+calibration_samples: 500
+sbc_samples: 256
+tarp_samples: 250
+c2st_pairs: 10000
+sl_c2st_pairs: 2200
+c2st_epochs: 30
+timing_warmup_seconds: 2.0
+sl_n: 22000
+variance_trajectory: {n_epochs: 500, n_train: 10000, n_test: 10000}

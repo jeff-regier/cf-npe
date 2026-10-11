@@ -1,0 +1,31 @@
+# @package _global_
+defaults:
+  - /problem: gaussian
+
+n_train: 10000
+
+evaluator:
+  _target_: cf_npe.evaluators.CompositeEvaluator
+  evaluators: []
+  sample_evaluators: []
+
+train_fn:
+  _target_: cf_npe.methods.std_npe.train_std_npe
+
+train_params:
+  parallel_ensemble: true
+  flow_cfg: null
+  loss: standard
+  encoder_cfg:
+    _target_: cf_npe.problems.base.EncoderConfig
+    hidden_dim: 256
+    n_layers: 2
+    dropout: 0.0
+  posterior_type: gaussian
+  training:
+    _target_: cf_npe.training.loop.TrainingConfig
+    n_epochs: 100
+    batch_size: ???
+    lr: 1.0e-3
+    weight_decay: 0.0
+    grad_clip: null

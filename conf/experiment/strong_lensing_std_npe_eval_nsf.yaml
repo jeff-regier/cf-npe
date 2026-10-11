@@ -1,0 +1,82 @@
+# @package _global_
+defaults:
+  - /problem: strong_lensing
+
+problem:
+  encoder:
+    _target_: cf_npe.problems.strong_lensing.SLEncoderArch
+    base_channels: ???
+    blocks_per_level: ???
+    dropout: ???
+    asinh_softening: 1.0
+    activation: ???
+    norm_groups: ???
+    padding_mode: reflect
+    use_se: ???
+    drop_path_max: ???
+  velocity_head:
+    _target_: cf_npe.problems.strong_lensing.SLVelocityHeadArch
+    n_transforms: ???
+    n_bins: ???
+    tail_bound: ???
+    mask_kind: ???
+    nsf_conditioner_width: ???
+    nsf_n_blocks: ???
+    nsf_n_attention: ???
+    nsf_attention_heads: ???
+    nsf_dropout: ???
+    nsf_use_se: ???
+    nsf_drop_path_max: ???
+    nsf_use_pos_encoding: ???
+    nsf_use_global_pool: ???
+
+eval_problem:
+  _target_: cf_npe.problems.StrongLensing
+  dim: ${problem.dim}
+  source_resolution: ${problem.source_resolution}
+  image_resolution: ${problem.image_resolution}
+  noise_sigma: ${problem.noise_sigma}
+  data_path: ${problem.data_path}
+  split_seed: ${seed}
+  test_fraction: ${problem.test_fraction}
+  is_test: true
+
+evaluator:
+  _target_: cf_npe.evaluators.CompositeEvaluator
+  evaluators:
+    - _target_: cf_npe.evaluators.LogLikelihoodEvaluator
+    - _target_: cf_npe.evaluators.C2STEvaluator
+      n_pairs: ${scale.sl_c2st_pairs}
+      n_epochs: ${scale.c2st_epochs}
+  sample_evaluators:
+    - _target_: cf_npe.evaluators.TARPEvaluator
+      n_samples: ${scale.tarp_samples}
+    - _target_: cf_npe.evaluators.SBCEvaluator
+      n_samples: ${scale.sbc_samples}
+    - _target_: cf_npe.evaluators.VarianceCalibrationEvaluator
+      n_samples: ${scale.calibration_samples}
+
+train_fn:
+  _target_: cf_npe.methods.std_npe.train_std_npe
+
+train_params:
+  parallel_ensemble: false
+  flow_cfg: null
+  loss: standard
+  posterior_type: nsf
+  training:
+    _target_: cf_npe.training.loop.TrainingConfig
+    n_epochs: 100
+    batch_size: ???
+    lr: ???
+    weight_decay: ???
+    grad_clip: 1.0
+  encoder_cfg:
+    _target_: cf_npe.problems.base.EncoderConfig
+    hidden_dim: 256
+    n_layers: 2
+    dropout: 0.3
+
+n_train: 10000
+use_amp: true
+seeds_per_job: 1

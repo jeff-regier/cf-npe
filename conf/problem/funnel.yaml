@@ -1,0 +1,4 @@
+_target_: cf_npe.problems.Funnel
+dim: ???
+scale: 1.0
+noise_std: 0.1

@@ -1,0 +1,6 @@
+train_params.training.lr: 0.0005957864283993051
+train_params.training.weight_decay: 6.043689408855432e-05
+train_params.encoder_cfg.hidden_dim: 512
+train_params.encoder_cfg.n_layers: 1
+train_params.encoder_cfg.dropout: 0.47232098204046935
+train_params.training.batch_size: 64

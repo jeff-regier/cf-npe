@@ -1,0 +1,3 @@
+_target_: cf_npe.problems.Gaussian
+dim: ???
+noise_std: 0.5

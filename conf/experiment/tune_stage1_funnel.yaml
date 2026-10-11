@@ -1,0 +1,31 @@
+# @package _global_
+defaults:
+  - /problem: funnel
+
+n_train: 10000
+
+evaluator:
+  _target_: cf_npe.evaluators.CompositeEvaluator
+  evaluators: []
+  sample_evaluators: []
+
+train_fn:
+  _target_: cf_npe.methods.cf_npe.train_cf_npe_stage1_only
+
+train_params:
+  parallel_ensemble: true
+  stage1_cache_save: null
+  training:
+    _target_: cf_npe.training.loop.TrainingConfig
+    n_epochs: 100
+    batch_size: ???
+    lr: ???
+    weight_decay: 0.0
+    grad_clip: null
+  encoder_cfg:
+    _target_: cf_npe.problems.base.EncoderConfig
+    hidden_dim: 256
+    n_layers: 2
+    dropout: 0.0
+  k_folds: 10
+  n_replicates: 3

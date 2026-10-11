@@ -1,0 +1,66 @@
+# @package _global_
+defaults:
+  - /problem: strong_lensing
+
+problem:
+  encoder:
+    _target_: cf_npe.problems.strong_lensing.SLEncoderArch
+    base_channels: 64
+    blocks_per_level: 1
+    dropout: 0.1
+    asinh_softening: 1.0
+    activation: gelu
+    norm_groups: 8
+    padding_mode: reflect
+    use_se: true
+    drop_path_max: 0.1
+  mean_head:
+    _target_: cf_npe.problems.strong_lensing.SLMeanHeadArch
+    width: 128
+    n_blocks: 16
+    n_attention: 4
+    attention_heads: 4
+    dropout: 0.3
+    use_pos_encoding: true
+    use_global_pool: true
+    activation: gelu
+    norm_groups: 8
+    padding_mode: reflect
+    use_se: true
+    drop_path_max: 0.1
+
+eval_problem:
+  _target_: cf_npe.problems.StrongLensing
+  dim: ${problem.dim}
+  source_resolution: ${problem.source_resolution}
+  image_resolution: ${problem.image_resolution}
+  noise_sigma: ${problem.noise_sigma}
+  data_path: ${problem.data_path}
+  split_seed: ${seed}
+  test_fraction: ${problem.test_fraction}
+  is_test: true
+
+evaluator:
+  _target_: cf_npe.evaluators.MeanPredictionMSEEvaluator
+
+train_fn:
+  _target_: cf_npe.methods.mean_only.train_mean_regressor
+
+train_params:
+  parallel_ensemble: false
+  training:
+    _target_: cf_npe.training.loop.TrainingConfig
+    n_epochs: 100
+    batch_size: 64
+    lr: 2.5e-3
+    weight_decay: 1.0e-6
+    grad_clip: null
+  encoder_cfg:
+    _target_: cf_npe.problems.base.EncoderConfig
+    hidden_dim: 256
+    n_layers: 2
+    dropout: 0.3
+
+n_train: 10000
+use_amp: true
+seeds_per_job: 1

@@ -1,0 +1,72 @@
+# @package _global_
+defaults:
+  - /problem: strong_lensing
+
+problem:
+  encoder:
+    _target_: cf_npe.problems.strong_lensing.SLEncoderArch
+    base_channels: 64
+    blocks_per_level: 1
+    dropout: 0.2
+    asinh_softening: 1.0
+    activation: gelu
+    norm_groups: 8
+    padding_mode: reflect
+    use_se: true
+    drop_path_max: 0.1
+  velocity_head:
+    _target_: cf_npe.problems.strong_lensing.SLVelocityHeadArch
+    n_transforms: 8
+    n_bins: 8
+    tail_bound: 10.0
+    mask_kind: stripe_row
+    nsf_conditioner_width: 128
+    nsf_n_blocks: 6
+    nsf_n_attention: 1
+    nsf_attention_heads: 4
+    nsf_dropout: 0.0
+    nsf_use_se: false
+    nsf_drop_path_max: 0.0
+    nsf_use_pos_encoding: true
+    nsf_use_global_pool: true
+
+eval_problem:
+  _target_: cf_npe.problems.StrongLensing
+  dim: ${problem.dim}
+  source_resolution: ${problem.source_resolution}
+  image_resolution: ${problem.image_resolution}
+  noise_sigma: ${problem.noise_sigma}
+  data_path: ${problem.data_path}
+  split_seed: ${seed}
+  test_fraction: ${problem.test_fraction}
+  is_test: true
+
+evaluator:
+  _target_: cf_npe.evaluators.CompositeEvaluator
+  evaluators: []
+  sample_evaluators: []
+
+train_fn:
+  _target_: cf_npe.methods.std_npe.train_std_npe
+
+train_params:
+  parallel_ensemble: false
+  flow_cfg: null
+  loss: standard
+  posterior_type: nsf
+  training:
+    _target_: cf_npe.training.loop.TrainingConfig
+    n_epochs: 100
+    batch_size: 128
+    lr: 1.0e-3
+    weight_decay: 1.0e-4
+    grad_clip: 1.0
+  encoder_cfg:
+    _target_: cf_npe.problems.base.EncoderConfig
+    hidden_dim: 256
+    n_layers: 2
+    dropout: 0.3
+
+n_train: 10000
+use_amp: true
+seeds_per_job: 1

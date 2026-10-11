@@ -1,0 +1,22 @@
+# @package _global_
+defaults:
+  - /sweep/_base
+  - /experiment: tune_stage2_std_npe_nsf
+  - _self_
+
+optuna_objective: best_val_loss
+seeds_per_job: 3
+
+hydra:
+  sweeper:
+    study_name: std_npe_nsf
+    params:
+      train_params.training.lr: tag(log, interval(1.0e-4, 1.0e-2))
+      train_params.training.weight_decay: tag(log, interval(1.0e-6, 1.0e-3))
+      train_params.encoder_cfg.hidden_dim: choice(64, 128, 256, 512)
+      train_params.encoder_cfg.n_layers: choice(1, 2, 3)
+      train_params.encoder_cfg.dropout: interval(0.0, 0.5)
+      train_params.flow_cfg.n_transforms: choice(2, 3, 5)
+      train_params.flow_cfg.n_bins: choice(8, 16)
+      train_params.flow_cfg.tail_bound: choice(3.0, 5.0, 7.0)
+      train_params.training.batch_size: choice(64, 128, 256)

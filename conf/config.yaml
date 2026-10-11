@@ -1,0 +1,30 @@
+defaults:
+  - scale: large
+  - _self_
+
+hydra:
+  job:
+    chdir: true
+  sweeper:
+    params: {}
+
+data_dir: ${hydra:runtime.cwd}/out/data
+
+problem: {}
+eval_problem: null
+train_fn: {}
+evaluator: {}
+config_id: ""
+
+n_train: ???
+eval_batch_size: ${train_params.training.batch_size}
+seed: 0
+n_test: ${scale.n_test}
+
+use_amp: false
+
+save_model: false
+
+timing_warmup_seconds: ${scale.timing_warmup_seconds}
+
+seeds_per_job: ???

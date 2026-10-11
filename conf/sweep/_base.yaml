@@ -1,0 +1,17 @@
+# @package _global_
+defaults:
+  - /config
+  - override /hydra/sweeper: optuna
+  - _self_
+
+hydra:
+  sweeper:
+    sampler:
+      _target_: optuna.samplers.TPESampler
+      seed: 42
+      multivariate: true
+      n_startup_trials: 20
+    direction: minimize
+    storage: null
+    n_trials: 100
+    n_jobs: 1

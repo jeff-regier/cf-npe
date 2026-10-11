@@ -1,0 +1,35 @@
+# @package _global_
+defaults:
+  - /sweep/_base
+  - /experiment: strong_lensing_std_npe_nsf
+  - _self_
+
+optuna_objective: best_val_loss
+
+hydra:
+  sweeper:
+    study_name: sl_std_npe_nsf_v2
+    params:
+      train_params.training.lr: tag(log, interval(1.0e-4, 1.5e-3))
+      train_params.training.weight_decay: tag(log, interval(1.0e-4, 3.0e-3))
+      train_params.training.batch_size: choice(128, 256)
+      problem.encoder.base_channels: choice(64)
+      problem.encoder.blocks_per_level: choice(2)
+      problem.encoder.activation: choice(gelu)
+      problem.encoder.use_se: choice(false)
+      problem.encoder.norm_groups: choice(16, 32)
+      problem.encoder.dropout: choice(0.1, 0.2, 0.3)
+      problem.encoder.drop_path_max: choice(0.0, 0.1, 0.2)
+      problem.velocity_head.nsf_conditioner_width: choice(64)
+      problem.velocity_head.nsf_n_blocks: choice(6)
+      problem.velocity_head.nsf_n_attention: choice(2)
+      problem.velocity_head.nsf_attention_heads: choice(4)
+      problem.velocity_head.nsf_use_se: choice(true)
+      problem.velocity_head.nsf_use_pos_encoding: choice(false)
+      problem.velocity_head.nsf_use_global_pool: choice(true)
+      problem.velocity_head.n_transforms: choice(3, 4, 5)
+      problem.velocity_head.n_bins: choice(6, 8)
+      problem.velocity_head.tail_bound: choice(5.0, 7.0)
+      problem.velocity_head.mask_kind: choice(stripe_row, stripe_col)
+      problem.velocity_head.nsf_dropout: choice(0.1, 0.2, 0.3)
+      problem.velocity_head.nsf_drop_path_max: choice(0.0, 0.1)

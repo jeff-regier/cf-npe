@@ -1,0 +1,17 @@
+problem.encoder.activation: silu
+problem.encoder.asinh_softening: 0.2
+problem.encoder.base_channels: 32
+problem.encoder.blocks_per_level: 4
+problem.encoder.drop_path_max: 0.2
+problem.encoder.dropout: 0.0
+problem.encoder.norm_groups: 8
+problem.encoder.padding_mode: zeros
+problem.encoder.use_se: true
+problem.mean_head.n_attention: 1
+problem.mean_head.n_blocks: 16
+problem.mean_head.use_global_pool: true
+problem.mean_head.use_pos_encoding: true
+problem.mean_head.width: 256
+train_params.training.batch_size: 64
+train_params.training.lr: 0.0013838291426595756
+train_params.training.weight_decay: 1.0e-06

@@ -1,0 +1,4 @@
+_target_: cf_npe.problems.Mixture
+dim: ???
+noise_std: 0.3
+mode_sep: 3.0

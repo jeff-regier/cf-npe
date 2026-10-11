@@ -1,0 +1,4 @@
+problem.velocity_head.data_encoding_dim: 64
+problem.velocity_head.mu_proj_channels: 8
+train_params.stage2_training.lr: 0.0018053357208688784
+train_params.stage2_training.weight_decay: 1.0e-05
